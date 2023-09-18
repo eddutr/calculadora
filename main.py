@@ -1,31 +1,26 @@
 from tkinter import *
 
 root = Tk()
-root.title('Calculadora')
-root.geometry('340x410')
-root.maxsize(340,410)
-root.minsize(340,410)
+root.title('')
+root.geometry('340x470')
+root.maxsize(340,470)
+root.minsize(340,470)
 root.configure(background='#181818')
 
 op = ''
-num1 = ''
-num2 = ''
+num1 = 0
+num2 = 0
 
-divisao = False
-multiplicacao = False
-adicao = False
-subtracao = False
-resultado = False
-
-def btnFormatado(root,txt,comando=''):
+def btnFormatado(txt,comando='',cor='#323232',corfg='#FFFFFF',w=8,h=2,padx=0):
     btn = Button(root,
                 text=txt,
                 command=comando,
-                fg='#FFFFFF',
+                fg=corfg,
                 activebackground='#3C3C3C',
-                bg='#323232',
-                width = 8,
-                height = 2,
+                bg=cor,
+                padx=padx,
+                width = w,
+                height = h,
                 activeforeground='#FFFFFF',
                 relief=FLAT,
                 font=('Segoe UI',12),
@@ -35,43 +30,34 @@ def btnFormatado(root,txt,comando=''):
 
 def operador(op=''):
     global num1, num2
-    global adicao
-    global multiplicacao
-    global divisao
-    global subtracao
-
-    if num1 == '':
+    if num1 == 0:
         num1 = e.get().replace(',','.')
         num1 = float(num1)
     else:
         num2 = e.get().replace(',','.')
         num2 = float(num2)
         if op == '+':
-            print(f'adição executada: {num1} + {num2} = ',end='')
+            print(f'{num1} + {num2} = ')
             num1 = float(num1)+float(num2)
-            adicao = True
-            print(f'{num1} - {adicao}')
+            print(num1)
 
         if op == '-':
-            print(f'subtração executada: {num1} - {num2} = ',end='')
+            print(f'{num1} - {num2} = ')
             num1 = float(num1)-float(num2)
-            subtracao = True
-            print(f'{num1} - {subtracao}')
+            print(num1)
 
         if op == '/':
-            print(f'divisão executada: {num1} / {num2} = ',end='')
+            print(f'{num1} / {num2} = ')
             num1 = float(num1)/float(num2)
-            divisao = True
-            print(f'{num1} - {divisao}')
+            print(num1)
 
         if op == 'x':
-            print(f'multiplicacao executada: {num1} * {num2} = ',end='')
+            print(f'{num1} * {num2} = ')
             num1 = float(num1)*float(num2)
-            multiplicacao = True
-            print(f'{num1} - {multiplicacao}')
+            print(num1)
 
         if op =='%':
-            num1 = num1 + (num2/100)
+            num1 = num1 + (num1/100*num2)
             return num2
     btnClear()
     return num1
@@ -81,66 +67,87 @@ def btnDivisao():
     global op 
     op = '/'
     operador(op)
-    print(num1)
+    showResult()
 
 def btnMultiplicacao():
     btnEquals()
     global op 
     op = 'x'
     operador(op)
-    print(num1)
+    showResult()
 
 def btnAdicao():
     btnEquals()
     global op 
     op = '+'
     operador(op)
-    print(num1)
+    showResult()
 
 def btnSubtracao():
     btnEquals()
     global op 
     op = '-'
     operador(op)
-    print(num1)
+    showResult()
 
 def btnPorcentagem():
-    operador(op)
-    print(num1)
+    global num2
+    if num2 == 0:
+        num2 = e.get().replace(',','.')
+        num2 = float(num2)
+        num2 = (num1/100*num2)
+        btnClear()
+        e.insert(0, num2)
+        showResult()
 
 def btnQuadrado():
-    num = e.get()
+    num = e.get().replace(',','.')
+    num = float(num)
     btnClear()
-    e.insert(0, float(num)*float(num))
+    e.insert(0, num*num)
 
 def btnEquals():
     global num1
     valor = str(operador(op)).replace('.',',')
     e.insert(0, valor)
-    print(valor)
-    num1 = ''
+    showResult()
+    num1 = 0
 
-def btnClear():
+def btnClear(): 
     e.delete(0, END)
+    e.delete(0, 0)
 
 def btnClearAll():
-    global num1
-    global num2
-    num1 = num2 = ''
+    global num1, num2
+    num1 = num2 = 0
+    showResult()
     btnClear()
 
 def clique(num):
-    if resultado:
-        btnClear()
     e.insert(END, num)
+
+def showResult():
+    global num1
+    s.delete(0, END)
+    s.insert(0, num1)
 
 # --------- JANELA
 titulo = Label(root, 
-                 text='Padrão', 
+                 text='Calculadora', 
                  fg='#FFFFFF', 
                  bg='#181818', 
                  font=('Segoe UI', 15, 'bold')
                ).place(x=5,y=10)
+
+s = Entry(root,
+          width=7,
+          bd=5,
+          relief=FLAT, 
+          fg='#3D3D3D', 
+          bg='#181818', 
+          font=('Segoe UI', 10, 'bold'), 
+          justify=RIGHT)
+s.place(x=326, y=31, anchor=E)
 
 e = Entry(root, 
             width=14, 
@@ -154,73 +161,88 @@ e.place(x = 326, y = 70, anchor=E)
 
 
 # --------- OPERADORES
-porcento = btnFormatado(root,'%',btnPorcentagem)
+porcento = btnFormatado('%',btnPorcentagem)
 porcento.place(x=6,y=110)
 
-quadrado = btnFormatado(root,'x²',btnQuadrado) 
-quadrado.place(x=89,y=110)
+vazio = btnFormatado(' ') 
+vazio.place(x=89,y=110)
 
-raiz = btnFormatado(root,'C',btnClearAll)
-raiz.place(x=172,y=110)
+limpar = btnFormatado('CE',btnClear)
+limpar.place(x=172,y=110)
 
-limpar = btnFormatado(root,'CE',btnClear)
-limpar.place(x=255,y=110)
+reset = btnFormatado('C',btnClearAll)
+reset.place(x=255,y=110)
 
-divide = btnFormatado(root,'÷',btnDivisao)
+
+
+# ---------
+
+decimos = btnFormatado('1/x')
+decimos.place(x=6,y=169)
+
+quadrado = btnFormatado('x²',btnQuadrado) 
+quadrado.place(x=89,y=169)
+
+raiz = btnFormatado('raiz')
+raiz.place(x=172,y=169)
+
+divide = btnFormatado('÷',btnDivisao)
 divide.place(x=255,y=169)
 
-multiplica = btnFormatado(root,'×',btnMultiplicacao)
+# ---------
+
+multiplica = btnFormatado('×',btnMultiplicacao)
 multiplica.place(x=255,y=228)
 
-subtrai = btnFormatado(root,'-',btnSubtracao)
+subtrai = btnFormatado('-',btnSubtracao)
 subtrai.place(x=255,y=287)
 
-igual = btnFormatado(root,'=',btnEquals)
-igual.place(x=255,y=346)
+soma = btnFormatado('+',btnAdicao)
+soma.place(x=255,y=346)
 
-soma = btnFormatado(root,'+',btnAdicao)
-soma.place(x=172,y=346)
+igual = btnFormatado('=',btnEquals,'#98E1BE','#181818')
+igual.place(x=255,y=405)
 
 
 # --------- primeira fileira
-sete = btnFormatado(root,'7',lambda:clique(7))
-sete.place(x=6,y=169)
+sete = btnFormatado('7',lambda:clique(7),'#3D3D3D')
+sete.place(x=6,y=228)
 
-oito = btnFormatado(root,'8',lambda:clique(8))
-oito.place(x=89,y=169)
+oito = btnFormatado('8',lambda:clique(8),'#3D3D3D')
+oito.place(x=89,y=228)
 
-nove = btnFormatado(root,'9',lambda:clique(9))
-nove.place(x=172,y=169)
+nove = btnFormatado('9',lambda:clique(9),'#3D3D3D')
+nove.place(x=172,y=228)
 
 
 # --------- segunda fileira
-quatro = btnFormatado(root,'4',lambda:clique(4))
-quatro.place(x=6,y=228)
+quatro = btnFormatado('4',lambda:clique(4),'#3D3D3D')
+quatro.place(x=6,y=287)
 
-cinco = btnFormatado(root,'5',lambda:clique(5))
-cinco.place(x=89,y=228)
+cinco = btnFormatado('5',lambda:clique(5),'#3D3D3D')
+cinco.place(x=89,y=287)
 
-seis = btnFormatado(root,'6',lambda:clique(6))
-seis.place(x=172,y=228)
+seis = btnFormatado('6',lambda:clique(6),'#3D3D3D')
+seis.place(x=172,y=287)
 
 
 # --------- terceira fileira
-um = btnFormatado(root,'1',lambda:clique(1))
-um.place(x=6,y=287)
+um = btnFormatado('1',lambda:clique(1),'#3D3D3D')
+um.place(x=6,y=346)
 
-dois = btnFormatado(root,'2',lambda:clique(2))
-dois.place(x=89,y=287)
+dois = btnFormatado('2',lambda:clique(2),'#3D3D3D')
+dois.place(x=89,y=346)
 
-tres = btnFormatado(root,'3',lambda:clique(3))
-tres.place(x=172,y=287)
+tres = btnFormatado('3',lambda:clique(3),'#3D3D3D')
+tres.place(x=172,y=346)
 
 
 # --------- ultima fileira
-ponto = btnFormatado(root,'·',lambda:clique(','))
-ponto.place(x=6,y=346)
+zero = btnFormatado('0',lambda:clique(0),'#3D3D3D',w=17,h=2,padx=1)
+zero.place(x=6,y=405)
 
-zero = btnFormatado(root,'0',lambda:clique(0))
-zero.place(x=89,y=346)
+ponto = btnFormatado(',',lambda:clique(','),'#3D3D3D')
+ponto.place(x=172,y=405)
 
 
 root.mainloop()
