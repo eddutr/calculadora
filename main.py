@@ -28,7 +28,7 @@ def btnFormatado(txt,comando='',cor='#323232',corfg='#FFFFFF',w=8,h=2,padx=0):
                 )
     return btn
 
-def operador(op=''):
+def operador(op):
     global num1, num2
     if num1 == 0:
         num1 = e.get().replace(',','.')
@@ -123,6 +123,12 @@ def btnClearAll():
     showResult()
     btnClear()
 
+def btnTroca():
+    num = e.get().replace(',','.')
+    num = float(num)*(-1)
+    btnClear()
+    e.insert(0, num)
+
 def clique(num):
     e.insert(END, num)
 
@@ -161,19 +167,18 @@ e.place(x = 326, y = 70, anchor=E)
 
 
 # --------- OPERADORES
+
 porcento = btnFormatado('%',btnPorcentagem)
 porcento.place(x=6,y=110)
 
-vazio = btnFormatado(' ') 
-vazio.place(x=89,y=110)
+sinal = btnFormatado(r'+/-',btnTroca) 
+sinal.place(x=89,y=110)
 
 limpar = btnFormatado('CE',btnClear)
 limpar.place(x=172,y=110)
 
 reset = btnFormatado('C',btnClearAll)
 reset.place(x=255,y=110)
-
-
 
 # ---------
 
