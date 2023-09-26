@@ -1,4 +1,5 @@
 from tkinter import *
+from math import sqrt
 
 root = Tk()
 root.title('')
@@ -31,34 +32,31 @@ def btnFormatado(txt,comando='',cor='#323232',corfg='#FFFFFF',w=8,h=2,padx=0):
 def operador(op):
     global num1, num2
     if num1 == 0:
-        num1 = e.get().replace(',','.')
-        num1 = float(num1)
+        num1 = float(e.get())
     else:
-        num2 = e.get().replace(',','.')
-        num2 = float(num2)
+        num2 = float(e.get())
         if op == '+':
             print(f'{num1} + {num2} = ')
-            num1 = float(num1)+float(num2)
+            num1 += num2
             print(num1)
 
         if op == '-':
             print(f'{num1} - {num2} = ')
-            num1 = float(num1)-float(num2)
+            num1 -= num2
             print(num1)
 
         if op == '/':
             print(f'{num1} / {num2} = ')
-            num1 = float(num1)/float(num2)
+            if num2 == 0:
+                num1 = 'ERROR'
+            else:
+                num1 /= num2
             print(num1)
 
         if op == 'x':
             print(f'{num1} * {num2} = ')
-            num1 = float(num1)*float(num2)
+            num1 *= num2
             print(num1)
-
-        if op =='%':
-            num1 = num1 + (num1/100*num2)
-            return num2
     btnClear()
     return num1
 
@@ -91,43 +89,61 @@ def btnSubtracao():
     showResult()
 
 def btnPorcentagem():
-    global num2
-    if num2 == 0:
-        num2 = e.get().replace(',','.')
-        num2 = float(num2)
-        num2 = (num1/100*num2)
-        btnClear()
-        e.insert(0, num2)
-        showResult()
+    global num2, num1
+    if num1 == 0:
+        num = float(e.get())
+        num = num/100
+    else:
+        num2 = float(e.get())
+        print('pegou num2')
+        num = num1/100*num2
+    btnClear()
+    e.insert(0, num)
+
+def btnTroca():
+    num = float(e.get())
+    num = num*(-1)
+    btnClear()
+    e.insert(0, num)
+
+def btnFracional():
+    num = float(e.get())
+    if num == 0:
+        num = 'ERROR'
+    else:
+        num = 1/num
+    btnClear()
+    e.insert(0, num)
 
 def btnQuadrado():
-    num = e.get().replace(',','.')
-    num = float(num)
+    num = float(e.get())
     btnClear()
     e.insert(0, num*num)
 
+def raizQuadrada():
+    num = float(e.get())
+    if num < 0:
+        num = 'ERROR'
+    else:
+        num = sqrt(num)
+    btnClear()
+    e.insert(0, num)
+
 def btnEquals():
     global num1
-    valor = str(operador(op)).replace('.',',')
+    valor = str(operador(op))
     e.insert(0, valor)
     showResult()
     num1 = 0
 
 def btnClear(): 
     e.delete(0, END)
-    e.delete(0, 0)
 
 def btnClearAll():
     global num1, num2
     num1 = num2 = 0
     showResult()
     btnClear()
-
-def btnTroca():
-    num = e.get().replace(',','.')
-    num = float(num)*(-1)
-    btnClear()
-    e.insert(0, num)
 
 def clique(num):
     e.insert(END, num)
@@ -182,13 +198,13 @@ reset.place(x=255,y=110)
 
 # ---------
 
-decimos = btnFormatado('1/x')
+decimos = btnFormatado('¹/x', btnFracional)
 decimos.place(x=6,y=169)
 
 quadrado = btnFormatado('x²',btnQuadrado) 
 quadrado.place(x=89,y=169)
 
-raiz = btnFormatado('raiz')
+raiz = btnFormatado('²√', raizQuadrada)
 raiz.place(x=172,y=169)
 
 divide = btnFormatado('÷',btnDivisao)
@@ -246,7 +262,7 @@ tres.place(x=172,y=346)
 zero = btnFormatado('0',lambda:clique(0),'#3D3D3D',w=17,h=2,padx=1)
 zero.place(x=6,y=405)
 
-ponto = btnFormatado(',',lambda:clique(','),'#3D3D3D')
+ponto = btnFormatado(',',lambda:clique('.'),'#3D3D3D')
 ponto.place(x=172,y=405)
 
 
