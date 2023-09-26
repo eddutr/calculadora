@@ -84,7 +84,6 @@ def btnPorcentagem():
         num = num/100
     else:
         num2 = float(e.get())
-        print('pegou num2')
         num = num1/100*num2
     btnClear()
     e.insert(0, num)
