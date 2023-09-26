@@ -36,27 +36,16 @@ def operador(op):
     else:
         num2 = float(e.get())
         if op == '+':
-            print(f'{num1} + {num2} = ')
             num1 += num2
-            print(num1)
-
         if op == '-':
-            print(f'{num1} - {num2} = ')
             num1 -= num2
-            print(num1)
-
+        if op == 'x':
+            num1 *= num2
         if op == '/':
-            print(f'{num1} / {num2} = ')
             if num2 == 0:
                 num1 = 'ERROR'
             else:
-                num1 /= num2
-            print(num1)
-
-        if op == 'x':
-            print(f'{num1} * {num2} = ')
-            num1 *= num2
-            print(num1)
+                num1 /= num2      
     btnClear()
     return num1
 
